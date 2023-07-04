@@ -2,7 +2,6 @@
 迪杰斯特拉
 """
 import heapq
-from collections import deque
 from math import inf
 
 
@@ -19,6 +18,7 @@ def dj(s, e, g, n):
     dis = [inf] * n
     dis[s] = 0
     vis = [False]*n
+    prev = [-1]*n  # 用来求最短路径
     while True:
         x = -1
         for i in range(n):
@@ -27,10 +27,23 @@ def dj(s, e, g, n):
         if x < 0 or dis[x] == inf:
             return -1
         if x == e:
+            # 最短路径 get_path(prev,e)
             return dis[x]
         vis[x] = True
         for y, w in enumerate(g[x]):
-            dis[y] = min(dis[y], dis[x] + w)
+            # dis[y] = min(dis[y], dis[x] + w)
+            if dis[x] + w < dis[y]:
+                prev[y] = x
+                dis[y] = dis[x] + w
+
+
+def get_path(prev, e):
+    path = [e]
+    t = prev[e]
+    while t != -1:
+        path.append(t)
+        t = prev[t]
+    return path[::-1]
 
 
 # 堆优化
