@@ -1,4 +1,4 @@
-class Solution:
+class KMP:
     def strStr(self, haystack: str, needle: str) -> int:
         def get_next(p):
             k, j, n = -1, 0, len(p)
