@@ -1,7 +1,34 @@
 """
+引用
+"""
+import sys
+import random
+from types import GeneratorType
+from itertools import *
+import io, os
+from typing import List
+from bisect import *
+from collections import *
+from contextlib import redirect_stdout
+from itertools import *
+from array import *
+from functools import lru_cache, reduce
+from heapq import *
+from math import *
+import heapq
+import sys
+from collections import defaultdict
+
+"""
+IO专用
+"""
+RI = lambda: map(int, sys.stdin.buffer.readline().split())
+RS = lambda: map(bytes.decode, sys.stdin.buffer.readline().strip().split())
+RILST = lambda: list(RI())
+
+"""
 并查集 非递归版本
 """
-import heapq
 from collections import defaultdict
 
 
@@ -18,7 +45,7 @@ class UnionFind:
         查找根节点
         路径压缩
         """
-        if self.father[x]:
+        if self.father[x] != x:
             self.father[x] = self.find(self.father[x])
         return self.father[x]
 
@@ -46,9 +73,10 @@ class UnionFind:
         添加新节点
         """
         if x not in self.father:
-            self.father[x] = None
-
-
+            self.father[x] = x
+"""
+字典树
+"""
 class Trie:
 
     def __init__(self):
@@ -80,7 +108,10 @@ class Trie:
         return True
 
 
-class Dikstral:
+"""
+最短路
+"""
+class Dijkstral:
 
     # n = 5
     # edges = [[]]
@@ -138,10 +169,6 @@ class Dikstral:
                     heapq.heappush(q, (d + b, a))
         return float('inf')
 
-"""
-质数筛
-"""
-from math import sqrt
 
 class KMP:
     def strStr(self, haystack: str, needle: str) -> int:
@@ -170,6 +197,7 @@ class KMP:
         return -1
 
 
+# 快速查询
 # 第k个元素=k - 1个位置上的元素
 def quick_Select(arr, s, e, k):
     l, r = s, e
@@ -191,13 +219,10 @@ def quick_Select(arr, s, e, k):
     if l > k - 1:
         quick_Select(arr, s, l - 1, k)
 
+
 """
 最长递增子序列LIS
 """
-from bisect import bisect_left
-from typing import List
-
-
 def lengthOfLIS(self, nums: List[int]) -> int:
     g = []
     for x in nums:

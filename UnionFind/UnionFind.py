@@ -17,7 +17,7 @@ class UnionFind:
         查找根节点
         路径压缩
         """
-        if self.father[x]:
+        if self.father[x] != x:
             self.father[x] = self.find(self.father[x])
         return self.father[x]
 
@@ -45,4 +45,4 @@ class UnionFind:
         添加新节点
         """
         if x not in self.father:
-            self.father[x] = None
+            self.father[x] = x
