@@ -29,7 +29,6 @@ RILST = lambda: list(RI())
 """
 并查集 非递归版本
 """
-from collections import defaultdict
 
 
 class UnionFind:
@@ -74,9 +73,13 @@ class UnionFind:
         """
         if x not in self.father:
             self.father[x] = x
+
+
 """
 字典树
 """
+
+
 class Trie:
 
     def __init__(self):
@@ -111,6 +114,8 @@ class Trie:
 """
 最短路
 """
+
+
 class Dijkstral:
 
     # n = 5
@@ -223,6 +228,8 @@ def quick_Select(arr, s, e, k):
 """
 最长递增子序列LIS
 """
+
+
 def lengthOfLIS(self, nums: List[int]) -> int:
     g = []
     for x in nums:
@@ -275,4 +282,77 @@ def ol_primes(n):
                 break
     return primes
 
+
+# 分解质因数
+def get_prime_factors(x):
+    ans = []
+    d = 2
+    while d * d <= x:
+        if x % d == 0:
+            # f(d,i) d是质因数
+            ans.append(d)
+            while x % d == 0:
+                x //= d
+        d += 1
+    if x > 1:
+        ans.append(x)  # f(x,i) x也是质因数
+    return ans
+
+# 动态开点线段树 单点更新，区间查询（求和）
+class Node:
+    __slots__ = ['val', 'left', 'right']
+
+    def __init__(self, left=None, right=None, val=0) -> None:
+        self.left, self.right, self.val = left, right, val
+
+# 线段树
+class SegmentTree:
+    def __init__(self):
+        self.root = Node()
+
+    # 单点增加val
+    def update_index(self, node, s, e, index, val):
+        # 动态开点
+        if not node.left:
+            node.left = Node()
+        if not node.right:
+            node.right = Node()
+        if s == e:
+            node.val = val
+            return node
+        mid = (s + e) >> 1
+        if index <= mid:
+            self.update_index(node.left, s, mid, index, val)
+        if index > mid:
+            self.update_index(node.right, mid + 1, e, index, val)
+        node.val = node.left.val + node.right.val
+
+    # 区间更新
+    def update(self, node, s, e, l, r, val):
+        # 动态开点
+        if not node.left:
+            node.left = Node()
+        if not node.right:
+            node.right = Node()
+        if l <= s and e <= r:
+            node.val = val
+            return node
+        mid = (s + e) >> 1
+        if l <= mid:
+            self.update(node.left, s, mid, l, r, val)
+        if r > mid:
+            self.update(node.right, mid + 1, e, l, r, val)
+        node.val = node.left.val + node.right.val
+
+
+    def query(self, node, s, e, l, r):
+        if l <= s and e <= r:
+            return node.val
+        mid = (s + e) >> 1
+        ans = 0
+        if l <= mid:
+            ans += self.query(node.left, s, mid, l, r)
+        if r > mid:
+            ans += self.query(node.right, mid + 1, e, l, r)
+        return ans
 

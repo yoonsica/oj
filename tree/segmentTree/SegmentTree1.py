@@ -11,41 +11,41 @@ class SegmentTree:
         self.root = Node()
 
     # 单点增加val
-    def update(self, node, s, e, index, val):
+    def update_index(self, node, s, e, index, val):
         # 动态开点
-        if not node:
-            node = Node()
+        if not node.left:
+            node.left = Node()
+        if not node.right:
+            node.right = Node()
         if s == e:
             node.val = val
             return node
         mid = (s + e) >> 1
         if index <= mid:
-            node.left = self.update(node.left, s, mid, index, val)
+            self.update_index(node.left, s, mid, index, val)
         if index > mid:
-            node.right = self.update(node.right, mid + 1, e, index, val)
-        node.val = (node.left.val if node.left else 0) + (node.right.val if node.right else 0)
-        return node
+            self.update_index(node.right, mid + 1, e, index, val)
+        node.val = node.left.val + node.right.val
 
-    # 也可以这样写
-    # def update(self, node, s, e, index, val):
-    #     # 动态开点
-    #     if not node.left:
-    #         node.left = Node()
-    #     if not node.right:
-    #         node.right = Node()
-    #     if s == e:
-    #         node.val = val
-    #         return
-    #     mid = (s + e) >> 1
-    #     if index <= mid:
-    #         self.update(node.left, s, mid, index, val)
-    #     if index > mid:
-    #         self.update(node.right, mid + 1, e, index, val)
-    #     node.val = node.left.val + node.right.val
+    # 区间更新
+    def update(self, node, s, e, l, r, val):
+        # 动态开点
+        if not node.left:
+            node.left = Node()
+        if not node.right:
+            node.right = Node()
+        if l <= s and e <= r:
+            node.val = val
+            return node
+        mid = (s + e) >> 1
+        if l <= mid:
+            self.update(node.left, s, mid, l, r, val)
+        if r > mid:
+            self.update(node.right, mid + 1, e, l, r, val)
+        node.val = node.left.val + node.right.val
+
 
     def query(self, node, s, e, l, r):
-        if not node:
-            return 0
         if l <= s and e <= r:
             return node.val
         mid = (s + e) >> 1

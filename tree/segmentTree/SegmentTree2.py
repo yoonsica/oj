@@ -20,7 +20,7 @@ class SegmentTree:
             node.val = nums[s]
         else:
             mid = (s + e) >> 1
-            node.left = self.build_tree(nums, s, e)
+            node.left = self.build_tree(nums, s, mid)
             node.right = self.build_tree(nums,mid + 1, e)
             node.val = node.left.val + node.right.val
         return node

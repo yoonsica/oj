@@ -14,7 +14,7 @@ class SegmentTree:
     def update(self, node, s, e, l, r, val):
         if l <= s and e <= r:
             node.val += (e - s + 1) * val
-            node.add += val
+            node.lazy += val
             return
         mid = (s + e) >> 1
         # 如果是求区间元素和，需要带上区间元素个数
