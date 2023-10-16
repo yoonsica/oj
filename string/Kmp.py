@@ -23,3 +23,6 @@ class KMP:
             if j == len(needle):
                 return i - j
         return -1
+
+
+print(KMP().strStr('abcdef', 'de'))

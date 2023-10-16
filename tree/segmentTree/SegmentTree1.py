@@ -12,28 +12,19 @@ class SegmentTree:
 
     # 单点增加val
     def update_index(self, node, s, e, index, val):
-        # 动态开点
-        if not node.left:
-            node.left = Node()
-        if not node.right:
-            node.right = Node()
         if s == e:
             node.val = val
             return node
+        self.push_down(node)
         mid = (s + e) >> 1
         if index <= mid:
             self.update_index(node.left, s, mid, index, val)
         if index > mid:
             self.update_index(node.right, mid + 1, e, index, val)
-        node.val = node.left.val + node.right.val
+        self.push_up(node)
 
     # 区间更新
     def update(self, node, s, e, l, r, val):
-        # 动态开点
-        if not node.left:
-            node.left = Node()
-        if not node.right:
-            node.right = Node()
         if l <= s and e <= r:
             node.val = val
             return node
@@ -42,7 +33,7 @@ class SegmentTree:
             self.update(node.left, s, mid, l, r, val)
         if r > mid:
             self.update(node.right, mid + 1, e, l, r, val)
-        node.val = node.left.val + node.right.val
+        self.push_up(node)
 
 
     def query(self, node, s, e, l, r):
@@ -55,3 +46,12 @@ class SegmentTree:
         if r > mid:
             ans += self.query(node.right, mid + 1, e, l, r)
         return ans
+
+    def push_up(self,node):
+        node.val = node.left.val + node.right.val
+
+    def push_down(self, node):
+        if not node.left:
+            node.left = Node()
+        if not node.right:
+            node.right = Node()

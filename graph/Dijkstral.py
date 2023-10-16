@@ -3,18 +3,7 @@
 """
 import heapq
 from math import inf
-
-
 class Dikstral:
-
-    # n = 5
-    # edges = [[]]
-    # g = [{} for _ in range(n)]
-    # for x, y, w in edges:
-    #     if w != -1:
-    #         g[x][y] = w
-    #         g[y][x] = w
-
     # 朴素
     def dj(s, e, g, n):
         dis = [inf] * n
