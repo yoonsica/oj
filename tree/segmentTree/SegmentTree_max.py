@@ -1,8 +1,28 @@
+class Solution:
+    def maxBalancedSubsequenceSum(self, nums: List[int]) -> int:
+        # nums[ij] - nums[ij-1] >= ij - ij-1
+        # nums[i] - i >= nums[j] - j # i>j
+        # 定义f[i] 为i结尾的子序列的最大值
+        a = [x - i for i, x in enumerate(nums)]
+        a = sorted(set(a))
+        d = {x: i for i, x in enumerate(a)}
+        n = len(nums)
+        m = len(a)
+        f = [-inf] * n
+        st = SegmentTree()
+        for i in range(n):
+            f[i] = nums[i]
+            if i:
+                f[i] = max(f[i], nums[i] + st.query(st.root, 0, m - 1, 0, d[nums[i] - i]))
+            st.update(st.root, 0, m - 1, d[nums[i] - i], d[nums[i] - i], f[i])
+        return max(f)
+
+
 # 动态开点线段树，区间更新，区间查询（最大值）
 class Node:
     __slots__ = ['val', 'left', 'right', 'lazy']
 
-    def __init__(self, left=None, right=None, val=0) -> None:
+    def __init__(self, left=None, right=None, val=-inf) -> None:
         self.val, self.left, self.right = val, left, right
 
 
@@ -30,10 +50,6 @@ class SegmentTree:
             node.left = Node()
         if not node.right:
             node.right = Node()
-        if node.val > node.left.val:
-            node.left.val = node.val
-        if node.val > node.right.val:
-            node.right.val = node.val
 
     def push_up(self, node):
         node.val = max(node.left.val, node.right.val)
@@ -43,9 +59,9 @@ class SegmentTree:
             return node.val
         mid = (s + e) >> 1
         self.push_down(node, mid - s + 1, e - mid)
-        ans = 0
+        ans = -inf
         if l <= mid:
-            ans += self.query(node.left, s, mid, l, r)
+            ans = self.query(node.left, s, mid, l, r)
         if r > mid:
-            ans += self.query(node.right, mid + 1, e, l, r)
+            ans = max(ans, self.query(node.right, mid + 1, e, l, r))
         return ans

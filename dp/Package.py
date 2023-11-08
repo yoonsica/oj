@@ -85,7 +85,7 @@ for v, w, s in a:
             if hh <= tt and k - s * v > q[hh]:  # 如果k/v - q[0] > s，代表已经滑动了超过s个v
                 hh += 1
             if hh <= tt:  # 更新f
-                f[k] = max(f[k], g[q[hh]] + (k - q[hh]) // v * w)  # 从最大值（队首）转移过来，再装k-q[0]个物品
+                f[k] = max(g[k], g[q[hh]] + (k - q[hh]) // v * w)  # 从最大值（队首）转移过来，再装k-q[0]个物品
             while hh <= tt and g[q[tt]] - (q[tt] - j) // v * w <= g[k] - (k - j) // v * w:
                 # while hh <= tt and g[q[tt]] + (k - q[tt]) // v * w <= g[k]:
                 tt -= 1

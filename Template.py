@@ -18,7 +18,8 @@ from math import *
 import heapq
 import sys
 from collections import defaultdict
-
+# 突破递归深度限制
+# sys.setrecursionlimit(1000000)
 from collections import Counter
 """
 IO专用
@@ -28,8 +29,6 @@ RS = lambda: map(bytes.decode, sys.stdin.buffer.readline().strip().split())
 RILST = lambda: list(RI())
 
 
-# 突破递归深度限制
-# sys.setrecursionlimit(n)
 
 """
 并查集
@@ -339,6 +338,52 @@ class BIT:
             i &= i - 1
         return ans
 
+# 区间更新
+class Solution:
+    def fullBloomFlowers(self, flowers: List[List[int]], people: List[int]) -> List[int]:
+        # 先离散化
+        _set = set()
+        for x, y in flowers:
+            _set.add(x)
+            _set.add(y)
+        for x in people:
+            _set.add(x)
+        arr = sorted(list(_set))
+        d = {e: i for i, e in enumerate(arr)}
+        # 树状数组
+        n = len(arr)
+        bit = BIT(n)
+        for s, e in flowers:
+            bit.add_interval(d[s] + 1, d[e] + 1, 1)
+        ans = []
+        for t in people:
+            ans.append(bit.query(d[t] + 1))
+        return ans
+
+
+# 树状数组模板
+class BIT:
+    def __init__(self, n):
+        # 区间更新需要维护差分数组，原数组元素均为0这里
+        self.arr = [0] * (n + 1)
+        self.n = n
+
+    def add_interval(self, l, r, v):
+        self.add(l, v)
+        self.add(r + 1, -v)
+
+    def add(self, i, v):
+        while i <= self.n:
+            self.arr[i] += v
+            i += i & -i
+
+    def query(self, i):
+        ans = 0
+        while i:
+            ans += self.arr[i]
+            i -= (i & -i)
+        return ans
+
 # sortedList
 class SortedList:
     def __init__(self, iterable=[], _load=200):
@@ -574,6 +619,29 @@ class SortedList:
         """Return string representation of sorted list."""
         return 'SortedList({0})'.format(list(self))
 
+
+# 二维前缀和
+class NumMatrix:
+
+    def __init__(self, matrix: List[List[int]]):
+        m = len(matrix)
+        n = len(matrix[0])
+        if not m or not n:
+            return
+        self.matrix = matrix
+        self.pre_sum = [[0]*(n + 1) for _ in range(m + 1)]
+        for i in range(m):
+            for j in range(n):
+                self.pre_sum[i + 1][j + 1] = self.pre_sum[i][j + 1] + self.pre_sum[i + 1][j] + self.matrix[i][j] - self.pre_sum[i][j]
+
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        return self.pre_sum[row2 + 1][col2 + 1] - self.pre_sum[row2 + 1][col1] - self.pre_sum[row1][col2 + 1] + self.pre_sum[row1][col1]
+
+# Your NumMatrix object will be instantiated and called as such:
+# obj = NumMatrix(matrix)
+# param_1 = obj.sumRegion(row1,col1,row2,col2)
+
+
 # # 背包问题
 # # 01背包
 # ## 记忆化搜索
@@ -766,28 +834,6 @@ for _ in range(N):
     for _ in range(int(input())):
         b.append(list(map(int, input().split())))
     a.append(b)
-# 记忆化搜索
-# from functools import lru_cache
-# @lru_cache(None)
-# def dfs(i, V):
-#     if i < 0:
-#         return 0
-#     ans = dfs(i - 1, V)
-#     for v, w in a[i]:
-#         if v <= V:
-#             ans = max(ans, dfs(i - 1, V - v) + w)
-#     return ans
-# print(dfs(N - 1, V))
-
-# 二维
-# f = [[0]*(V + 1) for _ in range(N + 1)]
-# for i in range(1,N + 1):
-#     for j in range(1,V + 1):
-#         f[i][j] = f[i - 1][j]
-#         for k,(v,w) in enumerate(a[i - 1]):
-#             if v <= j:
-#                 f[i][j] = max(f[i][j],f[i - 1][j - v] + w)
-# print(f[-1][-1])
 
 # 一维
 f = [0] * (V + 1)
@@ -872,3 +918,101 @@ for i in range(1,n + 1):
         ans.append(str(i))
     j = p[i][j]
 print(' '.join(ans))
+
+# 二维差分
+class diff2:
+    def __init__(self, m, n):
+        self.m = m
+        self.n = n
+        self.diff = [[0] * (n + 2) for _ in range(m + 2)]
+
+    def add(self, r1, c1, r2, c2, c):
+        diff = self.diff
+        diff[r1 + 1][c1 + 1] += c
+        diff[r1 + 1][c2 + 2] -= c
+        diff[r2 + 2][c1 + 1] -= c
+        diff[r2 + 2][c2 + 2] += c
+
+    def get(self):
+        diff = self.diff
+        for i in range(1, self.m + 1):
+            for j in range(1, self.n + 1):
+                diff[i][j] += diff[i][j - 1] + diff[i - 1][j] - diff[i - 1][j - 1]
+        diff = diff[1:-1]
+        for i, row in enumerate(diff):
+            diff[i] = row[1:-1]
+        return diff
+
+# 二维差分模板
+    diff = [[0] * (n + 2) for _ in range(n + 2)]
+    ans = [[0]*n for _ in range(n)]
+    for r1, c1, r2, c2 in queries:
+        diff[r1 + 1][c1 + 1] += 1
+        diff[r1 + 1][c2 + 2] -= 1
+        diff[r2 + 2][c1 + 1] -= 1
+        diff[r2 + 2][c2 + 2] += 1
+
+    # 用二维前缀和复原（原地修改）
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            diff[i][j] += diff[i][j - 1] + diff[i - 1][j] - diff[i - 1][j - 1]
+            ans[i - 1][j - 1] += diff[i][j]
+    # 保留中间 n*n 的部分，即为答案
+    return ans
+
+# 快速幂
+class Solution:
+    def myPow(self, x: float, n: int) -> float:
+        def quickMul(N):
+            if N == 0:
+                return 1.0
+            y = quickMul(N // 2)
+            return y * y if N % 2 == 0 else y * y * x
+
+        return quickMul(n) if n >= 0 else 1.0 / quickMul(-n)
+
+
+class Solution:
+    def myPow(self, x: float, n: int) -> float:
+        def quickMul(N):
+            ans = 1.0
+            # 贡献的初始值为 x
+            x_contribute = x
+            # 在对 N 进行二进制拆分的同时计算答案
+            while N > 0:
+                if N % 2 == 1:
+                    # 如果 N 二进制表示的最低位为 1，那么需要计入贡献
+                    ans *= x_contribute
+                # 将贡献不断地平方
+                x_contribute *= x_contribute
+                # 舍弃 N 二进制表示的最低位，这样我们每次只要判断最低位即可
+                N //= 2
+            return ans
+
+        return quickMul(n) if n >= 0 else 1.0 / quickMul(-n)
+
+# 拓展欧几里得求逆元
+def exgcd(a, b):
+    if not b:
+        return a, 1, 0
+    d, x, y = exgcd(b, a % b)
+    return d, y, x - (a // b) * y
+
+
+def inv(a, p):
+    d, v, _ = exgcd(a, p)
+    if d != 1:
+        return -1
+    return v % p
+
+
+# 费马小定理求逆元，要求p为素数，可以配合快速幂
+def inv(a, p):
+    return a ** (p - 2) % p
+
+
+# 递推法 要求p为素数
+def inv(a, p):
+    if a == 1:
+        return 1
+    return -(p // a) * inv(p % a, p) % p
