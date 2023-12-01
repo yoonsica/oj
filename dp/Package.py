@@ -296,3 +296,46 @@ for i in range(1,n + 1):
         ans.append(str(i))
     j = p[i][j]
 print(' '.join(ans))
+
+# 解法二
+n,m = map(int,input().split())
+a = []
+for _ in range(n):
+    a.append(list(map(int,input().split())))
+
+f = [[0]*(m + 1) for _ in range(n + 2)]
+
+for i in range(n,0,-1):
+    v,w = a[i - 1]
+    for j in range(m + 1):
+        f[i][j] = f[i + 1][j]
+        if j >= v:
+            f[i][j] = max(f[i][j],f[i + 1][j - v] + w)
+
+j = m
+ans = []
+
+for i in range(1,n + 1):
+    if j >= a[i - 1][0] and f[i][j] == f[i + 1][j - a[i - 1][0]] + a[i - 1][1]:
+        ans.append(str(i))
+        j -= a[i - 1][0]
+print(' '.join(ans))
+
+# 完全背包求具体方案
+class Solution:
+    def largestNumber(self, cost: List[int], target: int) -> str:
+        # 可以重复选，完全背包问题
+        # 求最大价值（最长）和具体方案
+        f = [0] + [-inf]*target
+        for x in cost:
+            for j in range(x,target + 1): # 正序
+                f[j] = max(f[j],f[j - x] + 1)
+        if f[-1] < 0:
+            return '0'
+        ans,j = '',target
+        # 构造答案
+        for i in range(len(cost) - 1,-1,-1):
+            while j >= cost[i] and f[j] == f[j - cost[i]] + 1:
+                ans += str(i + 1)
+                j -= cost[i]
+        return ans

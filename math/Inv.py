@@ -33,9 +33,16 @@ def inv(a, p):
     return v % p
 
 
-# 费马小定理求逆元，要求p为素数，可以配合快速幂
+# 费马小定理求逆元，要求p为素数
 def inv(a, p):
-    return a ** (p - 2) % p
+    res = 1
+    k = p - 2
+    while k:
+        if k & 1:
+            res = res * a % p
+        a = a * a % p
+        k >>= 1
+    return res
 
 
 # 递推法 要求p为素数
