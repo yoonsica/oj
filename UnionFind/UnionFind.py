@@ -17,3 +17,6 @@ class UnionFind:
     
     def get_size(self,x):
         return self.size[self.find(x)]
+
+    def is_same(self,x,y):
+        return self.find(x) == self.find(y)

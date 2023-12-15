@@ -18,9 +18,11 @@ ans = random.randint(1,11)
 print(True if ans <= 5 else False)
 
 # 快读板子
-RI = lambda: map(int, sys.stdin.buffer.readline().split())
-RS = lambda: map(bytes.decode, sys.stdin.buffer.readline().strip().split())
-RILST = lambda: list(RI())
+import sys
+RI = lambda: int(sys.stdin.readline().strip())
+RS = lambda: sys.stdin.readline().strip()
+RII = lambda: map(int, sys.stdin.readline().strip().split())
+RILIST = lambda: list(RII())
 """
 并查集
 """

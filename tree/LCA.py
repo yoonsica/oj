@@ -1,8 +1,9 @@
+from collections import deque
+from math import inf
 from typing import List
 
-
 class TreeAncestor:
-    def __init__(self, edges: List[List[int]]):
+    def __init__(self,root, edges: List[List[int]]):
         n = len(edges) + 1
         m = n.bit_length()
         g = [[] for _ in range(n)]
@@ -10,21 +11,28 @@ class TreeAncestor:
             g[x].append(y)
             g[y].append(x)
 
-        depth = [0] * n
+        depth = [inf] * n
+        depth[root] = 0
         pa = [[-1] * m for _ in range(n)]
-        def dfs(x: int, fa: int) -> None:
-            pa[x][0] = fa
-            for y in g[x]:
-                if y != fa:
-                    depth[y] = depth[x] + 1
-                    dfs(y, x)
-        dfs(0, -1)
 
-        for i in range(m - 1):
-            for x in range(n):
-                if pa[x][i] != -1:
-                    p = pa[x][i]
-                    pa[x][i + 1] = pa[p][i]
+        def bfs(root):
+            q = deque([root])
+            while q:
+                u = q.popleft()
+                for v in g[u]:
+                    if depth[v] > depth[u] + 1:
+                        depth[v] = depth[u] + 1
+                        q.append(v)
+                        pa[v][0] = u
+                        for k in range(m - 1):
+                            pa[v][k + 1] = pa[pa[v][k]][k]
+
+        bfs(root)
+
+        # for i in range(m - 1):
+        #     for x in range(n):
+        #         if pa[x][i] != -1:
+        #             pa[x][i + 1] = pa[pa[x][i]][i]
         self.depth = depth
         self.pa = pa
 

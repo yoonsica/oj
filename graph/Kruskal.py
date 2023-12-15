@@ -3,14 +3,33 @@
 """
 
 # edges = [(u,v,cost)]
-from UnionFind import UnionFind
+class UnionFind:
+    def __init__(self, n):
+        self.fa = list(range(n))
+        self.size = [1] * n
 
+    def find(self, x):
+        if self.fa[x] != x:
+            self.fa[x] = self.find(self.fa[x])
+        return self.fa[x]
 
-def kruskal(edges):
+    def union(self, x, y):
+        a, b = self.find(x), self.find(y)
+        if a != b:
+            self.fa[a] = b
+            self.size[b] += self.size[a]
+
+    def get_size(self, x):
+        return self.size[self.find(x)]
+
+    def is_connected(self,x,y):
+        return self.find(x) == self.find(y)
+
+def kruskal(edges,n):
     edges.sort(key=lambda x: x[2])
-    uf = UnionFind.UnionFind()
+    uf = UnionFind(n + 1)
     res = 0
-    for (u, v, cost), e in enumerate(edges):
+    for u, v, cost in edges:
         if not uf.is_connected(u, v):
             uf.union(u, v)
             res += cost
