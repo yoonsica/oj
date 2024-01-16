@@ -1,7 +1,7 @@
 from collections import deque
 from math import inf
 from typing import List
-
+# 倍增法求LCA
 class TreeAncestor:
     def __init__(self,root, edges: List[List[int]]):
         n = len(edges) + 1
@@ -29,10 +29,6 @@ class TreeAncestor:
 
         bfs(root)
 
-        # for i in range(m - 1):
-        #     for x in range(n):
-        #         if pa[x][i] != -1:
-        #             pa[x][i + 1] = pa[pa[x][i]][i]
         self.depth = depth
         self.pa = pa
 

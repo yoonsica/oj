@@ -20,3 +20,21 @@ class UnionFind:
 
     def is_same(self,x,y):
         return self.find(x) == self.find(y)
+
+
+class UnionFind:
+    def __init__(self, n):
+        self.fa = list(range(n))
+
+    def find(self, x):
+        if self.fa[x] != x:
+            self.fa[x] = self.find(self.fa[x])
+        return self.fa[x]
+
+    def union(self, x, y):
+        a, b = self.find(x), self.find(y)
+        if a != b:
+            self.fa[a] = b
+
+    def is_same(self, x, y):
+        return self.find(x) == self.find(y)
